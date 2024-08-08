@@ -1,52 +1,59 @@
-import json
-from datetime import datetime
+# Global list to store tasks
+task_list = []
 
-#global list to store tasks
-tasks = []
+# File name for saving and loading tasks
+task_file = "todo.txt"
 
-#file name for saving and loading tasks
-filename = "todo.json"
-
-def add_task(description, deadline, priority):
-    task = {
-        'description': description,
-        'deadline': deadline,
-        'priority': priority,
+def add_task(task_description, task_deadline, task_priority):
+    new_task = {
+        'description': task_description,
+        'deadline': task_deadline,
+        'priority': task_priority,
         'completed': False
     }
-    tasks.append(task)
+    task_list.append(new_task)
     save_tasks()
 
-def remove_task(index):
-    if 0 <= index < len(tasks):
-        del tasks[index]
+def remove_task(task_index):
+    if 0 <= task_index < len(task_list):
+        del task_list[task_index]
         save_tasks()
     else:
         print("Invalid task number.")
 
-def mark_task_complete(index):
-    if 0 <= index < len(tasks):
-        tasks[index]['completed'] = True
+def mark_task_complete(task_index):
+    if 0 <= task_index < len(task_list):
+        task_list[task_index]['completed'] = True
         save_tasks()
     else:
         print("Invalid task number.")
 
 def save_tasks():
-    with open(filename, 'w') as file:
-        json.dump(tasks, file)
+    with open(task_file, 'w') as file:
+        for task in task_list:
+            task_data = f"{task['description']},{task['deadline']},{task['priority']},{task['completed']}\n"
+            file.write(task_data)
 
 def load_tasks():
-    global tasks
+    global task_list
     try:
-        with open(filename, 'r') as file:
-            tasks = json.load(file)
+        with open(task_file, 'r') as file:
+            for line in file:
+                task_description, task_deadline, task_priority, task_completed = line.strip().split(',')
+                loaded_task = {
+                    'description': task_description,
+                    'deadline': task_deadline,
+                    'priority': int(task_priority),
+                    'completed': task_completed == 'True'
+                }
+                task_list.append(loaded_task)
     except FileNotFoundError:
         print("No saved tasks found. Starting with an empty list.")
 
 def display_tasks():
-    for i, task in enumerate(tasks):
-        status = 'Done' if task['completed'] else 'Pending'
-        print(f"{i + 1}. {task['description']} - {task['deadline']} - Priority: {task['priority']} - {status}")
+    for index, task in enumerate(task_list):
+        task_status = 'Done' if task['completed'] else 'Pending'
+        print(f"{index + 1}. {task['description']} - {task['deadline']} - Priority: {task['priority']} - {task_status}")
 
 def main():
     load_tasks()
@@ -58,24 +65,24 @@ def main():
         print("4. Display Tasks")
         print("5. Exit")
         
-        choice = input("Choose an option: ")
+        user_choice = input("Choose an option: ")
 
-        if choice == '1':
-            description = input("Enter task description: ")
-            deadline = input("Enter task deadline (YYYY-MM-DD): ")
-            priority = int(input("Enter task priority (1-5): "))
-            add_task(description, deadline, priority)
-        elif choice == '2':
+        if user_choice == '1':
+            task_description = input("Enter task description: ")
+            task_deadline = input("Enter task deadline (YYYY-MM-DD): ")
+            task_priority = int(input("Enter task priority (1-5): "))
+            add_task(task_description, task_deadline, task_priority)
+        elif user_choice == '2':
             display_tasks()
-            index = int(input("Enter task number to remove: ")) - 1
-            remove_task(index)
-        elif choice == '3':
+            task_index = int(input("Enter task number to remove: ")) - 1
+            remove_task(task_index)
+        elif user_choice == '3':
             display_tasks()
-            index = int(input("Enter task number to mark as complete: ")) - 1
-            mark_task_complete(index)
-        elif choice == '4':
+            task_index = int(input("Enter task number to mark as complete: ")) - 1
+            mark_task_complete(task_index)
+        elif user_choice == '4':
             display_tasks()
-        elif choice == '5':
+        elif user_choice == '5':
             break
         else:
             print("Invalid choice. Please try again.")

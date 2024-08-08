@@ -1,0 +1,2 @@
+clean Graphics card of PC,24-08-08,1,True
+complete the nest js pending project and deploy it ,24-08-15,4,False

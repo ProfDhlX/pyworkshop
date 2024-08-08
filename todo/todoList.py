@@ -1,6 +1,5 @@
 # Global list to store tasks
 task_list = []
-
 # File name for saving and loading tasks
 task_file = "todo.txt"
 

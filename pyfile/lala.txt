@@ -1,0 +1,4 @@
+name: salam, Marks: 98
+name: sajaki, Marks: 69
+name: cyam, Marks: 88
+name: maljol, Marks: 100
